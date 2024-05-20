@@ -7,7 +7,7 @@ namespace MauiAppBuscaCep.Services
     public class DataService
     {
 
-        public static async Task<Endereco>GetEnderecoByCep(string cep)
+        public static async Task<Endereco> GetEnderecoByCep(string cep)
         {
             Endereco end;
 
@@ -29,7 +29,7 @@ namespace MauiAppBuscaCep.Services
             return end;
         }
 
-       public static async Task<List<Bairro>>GetBairrosByCidade(int id_cidade)
+        public static async Task<List<Bairro>> GetBairrosByCidade(int id_cidade)
         {
             List<Bairro> arr_bairros = new List<Bairro>();
 
@@ -48,7 +48,7 @@ namespace MauiAppBuscaCep.Services
                     throw new Exception(response.RequestMessage.Content.ToString());
             }
             return arr_bairros;
-       }
+        }
 
         public static async Task<List<Cidade>> GetCidadesByEstado(string uf)
         {
@@ -70,6 +70,50 @@ namespace MauiAppBuscaCep.Services
 
             return arr_cidades;
         }
+
+        public static async Task<List<Logradouro>> GetLogradourosByBairroAndIdCidade(string bairro, int id_cidade)
+        {
+            List<Logradouro> arr_logradouros = new List<Logradouro>();
+            
+                using (HttpClient client = new HttpClient())
+                {
+                        HttpResponseMessage response = await client.GetAsync("https://cep.metoda.com.br/logradouro/by-bairro?id_cidade=" + id_cidade + "&bairro" + bairro);
+                if (response.IsSuccessStatusCode)
+                {
+
+                    string json = response.Content.ReadAsStringAsync().Result;
+                    arr_logradouros = JsonConvert.DeserializeObject<List<Logradouro>>(json);
+                }
+                else
+                    throw new Exception(response.RequestMessage.Content.ToString());
+                }
+
+            return arr_logradouros;
+            
+        }
+
+        public static async Task<List<Cep>> GetCepsByLogradouro(string logradouro)
+        {
+            List<Cep> arr_ceps = new List<Cep>();
+
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync("https://cep.metoda.com.br/cep/by-logradouro?logradouro=" + logradouro);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = response.Content.ReadAsStringAsync().Result;
+
+                    arr_ceps = JsonConvert.DeserializeObject<List<Cep>>(json);
+                }
+                else
+                    throw new Exception(response.RequestMessage.Content.ToString());
+            }
+
+            return arr_ceps;
+          
+        }
+            
 
     }
 
