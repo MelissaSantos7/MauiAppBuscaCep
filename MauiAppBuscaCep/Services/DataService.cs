@@ -29,7 +29,7 @@ namespace MauiAppBuscaCep.Services
             return end;
         }
 
-        public static async Task<List<Bairro>> GetBairrosByCidade(int id_cidade)
+        public static async Task<List<Bairro>> GetBairrosByIdCidade(int id_cidade)
         {
             List<Bairro> arr_bairros = new List<Bairro>();
 
